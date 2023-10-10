@@ -1,0 +1,184 @@
+blinker==1.6.2
+click==8.1.7
+dnspython==2.4.2
+flask==3.0.0
+importlib-metadata==6.8.0
+itsdangerous==2.1.2
+Jinja2==3.1.2
+MarkupSafe==2.1.3
+pymongo==3.12.0
+werkzeug==3.0.0
+zipp==3.17.0
+
+
+
+# import React from 'react';
+# import MessageBubble from './MessageBubble';
+
+# const ChatBox = ({ messages }) => {
+#   return (
+#     <div className="chat-box">
+#       {messages.map((message, index) => (
+#         <MessageBubble
+#           key={index}
+#           text={message.text}
+#           isUser={message.isUser}
+#         />
+#       ))}
+#     </div>
+#   );
+# }
+
+# export default ChatBox;
+# import React, { useState } from 'react';
+
+# const ChatInput = ({ onSend }) => {
+#   const [inputText, setInputText] = useState('');
+
+#   const handleInputChange = (e) => {
+#     setInputText(e.target.value);
+#   };
+
+#   const handleSendClick = () => {
+#     onSend(inputText);
+#     setInputText('');
+#   };
+
+#   return (
+#     <div className="input-container">
+#       <input
+#         type="text"
+#         value={inputText}
+#         onChange={handleInputChange}
+#         placeholder="Type a message..."
+#       />
+#       <button onClick={handleSendClick}>Send</button>
+#     </div>
+#   );
+# }
+
+# export default ChatInput;
+# import React from 'react';
+# import './MessageBubble.css';
+
+# const MessageBubble = ({ text, isUser }) => {
+#   return (
+#     <div className={`message-bubble ${isUser ? 'user' : 'bot'}`}>
+#       {text}
+#     </div>
+#   );
+# }
+
+# export default MessageBubble;
+# import React, { useState } from 'react';
+# import './App.css';
+# import ChatBox from './components/ChatBox';
+# import ChatInput from './components/ChatInput';
+# import axios from 'axios';
+
+# function App() {
+#   const [messages, setMessages] = useState([]);
+
+#   const handleSend = async (text) => {
+#     setMessages([...messages, { text, isUser: true }]);
+#     await axios.post('http://localhost:8000/api/chat', { user_input: text });
+#   };  
+
+#   return (
+#     <div className="App">
+#       <div className="chat-container">
+#         <ChatBox messages={messages} />
+#         <ChatInput onSend={handleSend} />
+#       </div>
+#       <div className="avatar-container">
+#         {/* Placeholder for 3D Avatar */}
+#       </div>
+#     </div>
+#   );
+# }
+
+# export default App;
+# from flask import Flask, request, jsonify
+# from flask_pymongo import PyMongo
+# from chatbot import chatbot
+# from flask_cors import CORS
+
+# app = Flask(__name__)
+# CORS(app)  # Enable CORS
+
+# app.config['MONGO_URI'] = 'mongodb://localhost:27017/chatbot_database'  # Change the URI as needed
+# mongo = PyMongo(app)
+
+# @app.route('/api/chat', methods=['GET', 'POST'])
+# def chat():
+#     if request.method == 'POST':
+#         data = request.get_json()
+#         user_input = data['user_input']
+#         bot_response = chatbot.chat(user_input)
+#         return jsonify({'bot_response': bot_response})
+#     else:
+#         return jsonify({'message': 'Hello from the Chat API!'})
+
+
+
+# def save_session_data(user_id, session_data):
+#     mongo.db.sessions.update_one({'user_id': user_id}, {'$set': session_data}, upsert=True)
+
+# def get_session_data(user_id):
+#     return mongo.db.sessions.find_one({'user_id': user_id})
+
+# if __name__ == '__main__':
+#     app.run(debug=True, port=8000)
+# # backend/chatbot.py
+
+# class Chatbot:
+#     def __init__(self):
+#         self.session = {}
+
+#     def nlu(self, user_input):
+#         # Basic NLU - This is a placeholder. You should use a real NLU library or service for better results.
+#         intent = 'default'
+#         if 'hello' in user_input.lower():
+#             intent = 'greeting'
+#         elif 'bye' in user_input.lower():
+#             intent = 'goodbye'
+#         return intent
+
+#     def nlg(self, intent):
+#         # Basic NLG - This is a placeholder. You should use a real NLG library or service for better results.
+#         responses = {
+#             'greeting': 'Hello! How can I assist you?',
+#             'goodbye': 'Goodbye! Have a great day!'
+#         }
+#         return responses.get(intent, "I'm not sure how to respond to that.")
+
+#     def process_message(self, user_input):
+#         intent = self.nlu(user_input)
+#         response = self.nlg(intent)
+#         return response
+
+#     def chat(self, user_input):
+#         # Save user input to session for context (You can enhance this session management)
+#         self.session['user_input'] = user_input
+
+#         # Process user input and generate response
+#         bot_response = self.process_message(user_input)
+
+#         # Save bot response to session for context
+#         self.session['bot_response'] = bot_response
+
+#         return bot_response
+
+# # Create an instance of the Chatbot class
+# chatbot = Chatbot()
+# from pymongo import MongoClient
+# from db import db
+
+# client = MongoClient('mongodb://localhost:27017/')
+# db = client['chatbot_database']
+
+# def save_session_data(user_id, session_data):
+#     db.sessions.update_one({'user_id': user_id}, {'$set': session_data}, upsert=True)
+
+# def get_session_data(user_id):
+#     return db.sessions.find_one({'user_id': user_id})
